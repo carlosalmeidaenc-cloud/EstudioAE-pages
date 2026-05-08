@@ -332,6 +332,12 @@
     if (overlay) overlay.remove();
   }
 
+  function returnHomeFromViewer() {
+    closeViewer();
+    view = { screen: "home", module: "", groupId: "" };
+    renderHome();
+  }
+
   function moveViewerImage(delta) {
     if (!viewer.open) return;
     viewer.index += delta;
@@ -414,7 +420,7 @@
         </div>
         <div class="viewer-actions">
           <button type="button" class="viewer-button" data-viewer-download>Baixar</button>
-          <button type="button" class="viewer-button" data-viewer-close>Fechar</button>
+          <button type="button" class="viewer-button" data-viewer-close>Voltar</button>
         </div>
       </div>
       <div class="viewer-stage" data-viewer-stage>
@@ -427,7 +433,7 @@
       </div>
     `;
 
-    overlay.querySelector("[data-viewer-close]").addEventListener("click", closeViewer);
+    overlay.querySelector("[data-viewer-close]").addEventListener("click", returnHomeFromViewer);
     overlay.querySelector("[data-viewer-download]").addEventListener("click", () => downloadMedia(item).catch(() => {}));
     overlay.querySelector("[data-viewer-prev]").addEventListener("click", () => moveViewerImage(-1));
     overlay.querySelector("[data-viewer-next]").addEventListener("click", () => moveViewerImage(1));
@@ -635,7 +641,7 @@
     if (!viewer.open) return;
     if (event.key === "Escape") {
       event.preventDefault();
-      closeViewer();
+      returnHomeFromViewer();
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
       moveViewerImage(-1);
