@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "kind": "client",
+  "encryption": "aes-gcm",
+  "manifestPath": "manifest.enc",
+  "mediaFormat": "aes-gcm-bin-v1",
+  "generatedAt": "2026-05-08T20:25:33.795Z"
+}
