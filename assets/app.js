@@ -94,13 +94,13 @@
     const topbar = document.createElement("header");
     topbar.className = "topbar";
     const subtitle = manifest && manifest.kind === "engineer-index"
-      ? "Area tecnica"
-      : manifest ? manifest.clientName : "Area protegida";
+      ? "Área técnica"
+      : manifest ? manifest.clientName : "Área protegida";
     topbar.innerHTML = `
       <div class="brand">
         <div class="brand-mark">AE</div>
         <div>
-          <p class="brand-title">Estudio AE</p>
+          <p class="brand-title">Estúdio AE</p>
           <p class="brand-subtitle">${html(subtitle)}</p>
         </div>
       </div>
@@ -164,8 +164,8 @@
     hero.className = "hero";
     hero.innerHTML = `
       <div class="welcome">
-        <h1>Ola, ${html(manifest.clientName)}</h1>
-        <p>Apenas voce tem acesso a essa pagina, pois ela possui um link unico. Escolha abaixo se deseja acessar OBRA ou DESIGN DE INTERIORES.</p>
+        <h1>Olá, ${html(manifest.clientName)}</h1>
+        <p>Apenas você tem acesso a essa página, pois ela possui um link único. Escolha abaixo se deseja acessar OBRA ou DESIGN DE INTERIORES.</p>
       </div>
     `;
 
@@ -202,7 +202,7 @@
     hero.innerHTML = `
       <div class="welcome">
         <h1>Clientes</h1>
-        <p>Selecione o cliente para abrir a area tecnica protegida.</p>
+        <p>Selecione o cliente para abrir a área técnica protegida.</p>
       </div>
     `;
     root.appendChild(hero);
@@ -218,7 +218,7 @@
       const card = button("folder-card", "", () => {
         window.location.href = client.path || client.url || "#";
       });
-      const updated = client.updatedAt ? `Atualizado em ${new Date(client.updatedAt).toLocaleDateString("pt-BR")}` : "Area tecnica";
+      const updated = client.updatedAt ? `Atualizado em ${new Date(client.updatedAt).toLocaleDateString("pt-BR")}` : "Área técnica";
       card.innerHTML = `<strong>${html(client.name || client.id || "Cliente")}</strong><span>${html(updated)}</span>`;
       grid.appendChild(card);
     }
@@ -460,7 +460,7 @@
       <div class="viewer-stage" data-viewer-stage>
         <button type="button" class="viewer-nav viewer-nav-prev" data-viewer-prev aria-label="Item anterior">&lt;</button>
         <div class="viewer-loading">Carregando...</div>
-        <button type="button" class="viewer-nav viewer-nav-next" data-viewer-next aria-label="Proximo item">&gt;</button>
+        <button type="button" class="viewer-nav viewer-nav-next" data-viewer-next aria-label="Próximo item">&gt;</button>
       </div>
       <div class="viewer-footer">
         <span>${html(`${viewer.index + 1} / ${media.length}`)}</span>
@@ -484,7 +484,7 @@
         if (loading) loading.replaceWith(image);
       }).catch(() => {
         const loading = stage.querySelector(".viewer-loading");
-        if (loading) loading.textContent = "Nao foi possivel abrir a imagem.";
+        if (loading) loading.textContent = "Não foi possível abrir a imagem.";
       });
     } else {
       const panel = document.createElement("div");
@@ -596,8 +596,8 @@
     panel.className = "password-panel";
     panel.innerHTML = `
       <div class="brand-mark">AE</div>
-      <h1>Area tecnica</h1>
-      <p>${html(message || "Digite a senha local para abrir esta pagina.")}</p>
+      <h1>Área técnica</h1>
+      <p>${html(message || "Digite a senha local para abrir esta página.")}</p>
       <form data-password-form>
         <input type="password" autocomplete="current-password" placeholder="Senha" required>
         <button type="submit">Entrar</button>
@@ -618,7 +618,7 @@
         cryptoState.key = key;
         renderHome();
       } catch (failure) {
-        error.textContent = "Senha invalida ou pagina corrompida.";
+        error.textContent = "Senha inválida ou página corrompida.";
       }
     });
     root.appendChild(panel);
@@ -655,7 +655,7 @@
       return false;
     }
 
-    throw new Error(`Criptografia nao suportada: ${publicManifest.encryption}`);
+    throw new Error(`Criptografia não suportada: ${publicManifest.encryption}`);
   }
 
   async function boot() {
@@ -669,7 +669,7 @@
       clear();
       const empty = document.createElement("section");
       empty.className = "empty-state";
-      empty.innerHTML = `<div class="brand-mark">AE</div><h1>Erro ao abrir</h1><p>Manifest nao encontrado, link incompleto ou senha invalida.</p>`;
+      empty.innerHTML = `<div class="brand-mark">AE</div><h1>Erro ao abrir</h1><p>Manifest não encontrado, link incompleto ou senha inválida.</p>`;
       root.appendChild(empty);
     }
   }
