@@ -228,10 +228,7 @@
     const grid = document.createElement("section");
     grid.className = "folder-grid";
     for (const group of groups) {
-      const card = button("folder-card", "", () => {
-        view = { screen: "group", module: view.module, groupId: group.id };
-        renderGroup();
-      });
+      const card = button("folder-card", "", () => openGroup(group.id));
       card.innerHTML = `<strong>${html(group.title)}</strong><span>${html(countLabel(group.count, group.countSingular, group.countPlural))}</span>`;
       grid.appendChild(card);
     }
@@ -244,6 +241,29 @@
 
   function mediaForGroup(group) {
     return group ? group.media || [] : [];
+  }
+
+  function shouldOpenGroupInViewer(group) {
+    const media = mediaForGroup(group);
+    if (!media.length) return false;
+    if (manifest.kind === "engineer" && view.module === "interiores" && group.bucket === "PDF") return false;
+    return media.some(isImageItem);
+  }
+
+  function firstImageIndex(group) {
+    const media = mediaForGroup(group);
+    const imageIndex = media.findIndex(isImageItem);
+    return imageIndex >= 0 ? imageIndex : 0;
+  }
+
+  function openGroup(groupId) {
+    view = { screen: "group", module: view.module, groupId };
+    const group = selectedGroup();
+    if (shouldOpenGroupInViewer(group)) {
+      openViewer(firstImageIndex(group));
+      return;
+    }
+    renderGroup();
   }
 
   function currentViewerGroup() {
