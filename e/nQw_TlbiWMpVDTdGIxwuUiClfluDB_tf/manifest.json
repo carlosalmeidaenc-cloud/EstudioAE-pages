@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "kind": "engineer",
+  "encryption": "pbkdf2-aes-gcm",
+  "manifestPath": "manifest.enc",
+  "mediaFormat": "aes-gcm-bin-v1",
+  "salt": "FkQeU4Pt8EE7feVAb7Daqg",
+  "iterations": 210000,
+  "generatedAt": "2026-05-08T22:07:14.393Z"
+}

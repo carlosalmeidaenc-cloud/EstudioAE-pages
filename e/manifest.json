@@ -2,7 +2,7 @@
   "schema": 1,
   "kind": "engineer-index",
   "encryption": "none",
-  "generatedAt": "2026-05-08T22:06:47.043Z",
+  "generatedAt": "2026-05-08T22:07:23.314Z",
   "clients": [
     {
       "id": "Lucas",
@@ -18,6 +18,24 @@
         "ignored": {
           "designEmptyFolders": 35,
           "designFiles": 1,
+          "obraItems": 0
+        }
+      }
+    },
+    {
+      "id": "Thiago Sarmento",
+      "name": "Thiago Sarmento",
+      "path": "nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
+      "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
+      "updatedAt": "2026-05-08T22:07:14.393Z",
+      "summary": {
+        "designGroupCount": 0,
+        "designMediaCount": 0,
+        "obraStageCount": 2,
+        "obraPhotoCount": 17,
+        "ignored": {
+          "designEmptyFolders": 156,
+          "designFiles": 0,
           "obraItems": 0
         }
       }
