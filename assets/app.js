@@ -332,10 +332,8 @@
     if (overlay) overlay.remove();
   }
 
-  function returnHomeFromViewer() {
+  function returnToPreviousPageFromViewer() {
     closeViewer();
-    view = { screen: "home", module: "", groupId: "" };
-    renderHome();
   }
 
   function moveViewerImage(delta) {
@@ -433,7 +431,7 @@
       </div>
     `;
 
-    overlay.querySelector("[data-viewer-close]").addEventListener("click", returnHomeFromViewer);
+    overlay.querySelector("[data-viewer-close]").addEventListener("click", returnToPreviousPageFromViewer);
     overlay.querySelector("[data-viewer-download]").addEventListener("click", () => downloadMedia(item).catch(() => {}));
     overlay.querySelector("[data-viewer-prev]").addEventListener("click", () => moveViewerImage(-1));
     overlay.querySelector("[data-viewer-next]").addEventListener("click", () => moveViewerImage(1));
@@ -641,7 +639,7 @@
     if (!viewer.open) return;
     if (event.key === "Escape") {
       event.preventDefault();
-      returnHomeFromViewer();
+      returnToPreviousPageFromViewer();
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
       moveViewerImage(-1);
