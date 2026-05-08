@@ -93,12 +93,15 @@
   function renderTopbar() {
     const topbar = document.createElement("header");
     topbar.className = "topbar";
+    const subtitle = manifest && manifest.kind === "engineer-index"
+      ? "Area tecnica"
+      : manifest ? manifest.clientName : "Area protegida";
     topbar.innerHTML = `
       <div class="brand">
         <div class="brand-mark">AE</div>
         <div>
           <p class="brand-title">Estudio AE</p>
-          <p class="brand-subtitle">${html(manifest ? manifest.clientName : "Area protegida")}</p>
+          <p class="brand-subtitle">${html(subtitle)}</p>
         </div>
       </div>
     `;
@@ -187,6 +190,39 @@
 
     hero.appendChild(grid);
     root.appendChild(hero);
+  }
+
+  function renderEngineerIndex() {
+    clear();
+    root.appendChild(renderTopbar());
+
+    const clients = Array.isArray(manifest.clients) ? manifest.clients : [];
+    const hero = document.createElement("section");
+    hero.className = "hero";
+    hero.innerHTML = `
+      <div class="welcome">
+        <h1>Clientes</h1>
+        <p>Selecione o cliente para abrir a area tecnica protegida.</p>
+      </div>
+    `;
+    root.appendChild(hero);
+
+    if (!clients.length) {
+      renderEmpty("Nenhum cliente publicado no GitPages tecnico.");
+      return;
+    }
+
+    const grid = document.createElement("section");
+    grid.className = "folder-grid";
+    for (const client of clients) {
+      const card = button("folder-card", "", () => {
+        window.location.href = client.path || client.url || "#";
+      });
+      const updated = client.updatedAt ? `Atualizado em ${new Date(client.updatedAt).toLocaleDateString("pt-BR")}` : "Area tecnica";
+      card.innerHTML = `<strong>${html(client.name || client.id || "Cliente")}</strong><span>${html(updated)}</span>`;
+      grid.appendChild(card);
+    }
+    root.appendChild(grid);
   }
 
   function groupsForCurrentModule() {
@@ -625,7 +661,10 @@
   async function boot() {
     try {
       const ready = await loadManifest();
-      if (ready) renderHome();
+      if (ready) {
+        if (manifest && manifest.kind === "engineer-index") renderEngineerIndex();
+        else renderHome();
+      }
     } catch (error) {
       clear();
       const empty = document.createElement("section");
