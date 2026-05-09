@@ -294,7 +294,19 @@
       return manifest.moduleOrder.filter((name) => manifest.modules && manifest.modules[name]);
     }
     if (manifest.modules && manifest.kind === "executor") return Object.keys(manifest.modules);
-    return ["obra", "interiores"].filter((name) => manifest.modules && manifest.modules[name]);
+    return ["obra", "interiores", "arquitetonico"].filter((name) => manifest.modules && manifest.modules[name]);
+  }
+
+  function defaultModuleLabel(moduleName) {
+    if (moduleName === "obra") return "OBRA";
+    if (moduleName === "arquitetonico") return "ARQUITETONICO";
+    return "DESIGN DE INTERIORES";
+  }
+
+  function defaultModuleDescription(moduleName) {
+    if (moduleName === "obra") return "Etapas com fotos registradas.";
+    if (moduleName === "arquitetonico") return "Pranchas e fachadas publicadas para consulta.";
+    return "Grupos disponiveis para consulta.";
   }
 
   function moduleEntry(moduleName) {
@@ -304,10 +316,10 @@
     const clientLike = manifest.kind === "client" || manifest.kind === "client-preview";
     return {
       id: moduleName,
-      label: module.label || (moduleName === "obra" ? "OBRA" : "DESIGN DE INTERIORES"),
-      description: module.description || (moduleName === "obra" ? "Etapas com fotos registradas." : "Grupos disponiveis para consulta."),
-      groupSingular: module.groupSingular || (moduleName === "obra" ? "etapa" : "grupo"),
-      groupPlural: module.groupPlural || (moduleName === "obra" ? "etapas" : "grupos"),
+      label: module.label || defaultModuleLabel(moduleName),
+      description: module.description || defaultModuleDescription(moduleName),
+      groupSingular: module.groupSingular || (moduleName === "obra" ? "etapa" : moduleName === "arquitetonico" ? "pasta" : "grupo"),
+      groupPlural: module.groupPlural || (moduleName === "obra" ? "etapas" : moduleName === "arquitetonico" ? "pastas" : "grupos"),
       itemSingular: module.itemSingular || (moduleName === "obra" ? "foto" : clientLike ? "imagem" : "arquivo"),
       itemPlural: module.itemPlural || (moduleName === "obra" ? "fotos" : clientLike ? "imagens" : "arquivos"),
       groups,
@@ -473,10 +485,6 @@
     return Math.min(max, Math.max(min, value));
   }
 
-  function zoomLabel(scale) {
-    return `${Math.round(scale * 100)}%`;
-  }
-
   async function mediaUrl(item) {
     if (!item || !item.mediaPath) throw new Error("midia sem caminho");
     if (!cryptoState.encrypted) return item.mediaPath;
@@ -561,11 +569,7 @@
     return dots;
   }
 
-  function createViewerZoom(stage, content, controls) {
-    const label = controls.querySelector("[data-viewer-zoom-label]");
-    const zoomOut = controls.querySelector("[data-viewer-zoom-out]");
-    const zoomIn = controls.querySelector("[data-viewer-zoom-in]");
-    const zoomReset = controls.querySelector("[data-viewer-zoom-reset]");
+  function createViewerZoom(stage, content) {
     const state = {
       scale: VIEWER_MIN_ZOOM,
       x: 0,
@@ -581,9 +585,6 @@
         content.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(${this.scale})`;
         content.classList.toggle("is-zoomed", this.isZoomed());
         stage.classList.toggle("is-zoomed", this.isZoomed());
-        label.textContent = zoomLabel(this.scale);
-        zoomOut.disabled = this.scale <= VIEWER_MIN_ZOOM;
-        zoomIn.disabled = this.scale >= VIEWER_MAX_ZOOM;
       },
       setScale(value) {
         this.scale = clampNumber(value, VIEWER_MIN_ZOOM, VIEWER_MAX_ZOOM);
@@ -597,10 +598,6 @@
       }
     };
 
-    controls.hidden = false;
-    zoomOut.addEventListener("click", () => state.setScale(state.scale - VIEWER_ZOOM_STEP));
-    zoomIn.addEventListener("click", () => state.setScale(state.scale + VIEWER_ZOOM_STEP));
-    zoomReset.addEventListener("click", () => state.setScale(VIEWER_MIN_ZOOM));
     content.addEventListener("dblclick", (event) => {
       event.preventDefault();
       state.setScale(state.isZoomed() ? VIEWER_MIN_ZOOM : 2);
@@ -658,11 +655,6 @@
           <span>${html(groupLabel)}</span>
         </div>
         <div class="viewer-actions">
-          <div class="viewer-zoom-controls" data-viewer-zoom-controls hidden>
-            <button type="button" class="viewer-button viewer-zoom-button" data-viewer-zoom-out aria-label="Reduzir zoom">-</button>
-            <button type="button" class="viewer-button viewer-zoom-reset" data-viewer-zoom-reset aria-label="Redefinir zoom"><span data-viewer-zoom-label>100%</span></button>
-            <button type="button" class="viewer-button viewer-zoom-button" data-viewer-zoom-in aria-label="Ampliar zoom">+</button>
-          </div>
           <button type="button" class="viewer-button" data-viewer-download>Baixar</button>
           <button type="button" class="viewer-button" data-viewer-close>Voltar</button>
         </div>
@@ -684,7 +676,6 @@
     overlay.querySelector(".viewer-footer").appendChild(renderViewerDots(media));
 
     const stage = overlay.querySelector("[data-viewer-stage]");
-    const zoomControls = overlay.querySelector("[data-viewer-zoom-controls]");
     let zoomState = null;
     const mountVisual = (node) => {
       const viewport = document.createElement("div");
@@ -696,7 +687,7 @@
       const loading = stage.querySelector(".viewer-loading");
       if (loading) loading.replaceWith(viewport);
       if (isZoomableItem(item)) {
-        zoomState = createViewerZoom(stage, content, zoomControls);
+        zoomState = createViewerZoom(stage, content);
       }
     };
     if (isImageItem(item)) {

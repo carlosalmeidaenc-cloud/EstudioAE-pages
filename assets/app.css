@@ -340,26 +340,6 @@ a {
   cursor: default;
 }
 
-.viewer-zoom-controls {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.viewer-zoom-controls[hidden] {
-  display: none;
-}
-
-.viewer-zoom-button {
-  width: 38px;
-  padding: 0;
-}
-
-.viewer-zoom-reset {
-  min-width: 66px;
-  padding: 0 10px;
-}
-
 .viewer-button:hover,
 .viewer-button:focus-visible,
 .viewer-nav:hover,
@@ -595,18 +575,6 @@ a {
   }
 
   .viewer-button {
-    flex: 1;
-  }
-
-  .viewer-zoom-controls {
-    flex: 1 1 100%;
-  }
-
-  .viewer-zoom-button {
-    flex: 0 0 44px;
-  }
-
-  .viewer-zoom-reset {
     flex: 1;
   }
 
