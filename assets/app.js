@@ -241,13 +241,140 @@
     return view.module === "obra" ? "OBRA" : "DESIGN DE INTERIORES";
   }
 
+  function renderTopbar() {
+    const topbar = document.createElement("header");
+    topbar.className = "topbar";
+    let subtitle = "Area protegida";
+    if (manifest && manifest.kind === "engineer-index") subtitle = "Area tecnica";
+    else if (manifest && manifest.kind === "executor") subtitle = "Area do executor";
+    else if (manifest) subtitle = manifest.clientName;
+    topbar.innerHTML = `
+      <div class="brand">
+        <div class="brand-mark">AE</div>
+        <div>
+          <p class="brand-title">Estudio AE</p>
+          <p class="brand-subtitle">${html(subtitle)}</p>
+        </div>
+      </div>
+    `;
+    return topbar;
+  }
+
+  function normalizeModuleGroups(module) {
+    if (!module || typeof module !== "object") return [];
+    if (Array.isArray(module.groups)) {
+      return module.groups.map((group) => ({
+        ...group,
+        groupTitle: group.name,
+        media: group.media || []
+      }));
+    }
+    if (Array.isArray(module.environments)) {
+      return module.environments.map((environment) => ({
+        ...environment,
+        groupTitle: environment.name,
+        media: environment.images || []
+      }));
+    }
+    if (Array.isArray(module.stages)) {
+      return module.stages.map((stage) => ({
+        ...stage,
+        groupTitle: stage.label,
+        media: stage.photos || []
+      }));
+    }
+    return [];
+  }
+
+  function moduleOrder() {
+    if (Array.isArray(manifest.moduleOrder) && manifest.moduleOrder.length) {
+      return manifest.moduleOrder.filter((name) => manifest.modules && manifest.modules[name]);
+    }
+    if (manifest.modules && manifest.kind === "executor") return Object.keys(manifest.modules);
+    return ["obra", "interiores"].filter((name) => manifest.modules && manifest.modules[name]);
+  }
+
+  function moduleEntry(moduleName) {
+    const module = manifest.modules && manifest.modules[moduleName] ? manifest.modules[moduleName] : {};
+    const groups = normalizeModuleGroups(module);
+    const mediaCount = groups.reduce((sum, entry) => sum + entry.media.length, 0);
+    const clientLike = manifest.kind === "client" || manifest.kind === "client-preview";
+    return {
+      id: moduleName,
+      label: module.label || (moduleName === "obra" ? "OBRA" : "DESIGN DE INTERIORES"),
+      description: module.description || (moduleName === "obra" ? "Etapas com fotos registradas." : "Grupos disponiveis para consulta."),
+      groupSingular: module.groupSingular || (moduleName === "obra" ? "etapa" : "grupo"),
+      groupPlural: module.groupPlural || (moduleName === "obra" ? "etapas" : "grupos"),
+      itemSingular: module.itemSingular || (moduleName === "obra" ? "foto" : clientLike ? "imagem" : "arquivo"),
+      itemPlural: module.itemPlural || (moduleName === "obra" ? "fotos" : clientLike ? "imagens" : "arquivos"),
+      groups,
+      mediaCount
+    };
+  }
+
+  function rawGroupsForModule(moduleName) {
+    return moduleEntry(moduleName).groups;
+  }
+
+  function homeText() {
+    if (manifest.kind === "executor") {
+      return "Arquivos tecnicos liberados para execucao. Escolha a disciplina para consultar os ambientes.";
+    }
+    return "Apenas voce tem acesso a essa pagina, pois ela possui um link unico. Escolha abaixo o que deseja acessar.";
+  }
+
+  function renderHome() {
+    clear();
+    root.appendChild(renderTopbar());
+
+    const hero = document.createElement("section");
+    hero.className = "hero";
+    hero.innerHTML = `
+      <div class="welcome">
+        <h1>${manifest.kind === "executor" ? "Executor" : `Ola, ${html(manifest.clientName)}`}</h1>
+        <p>${html(homeText())}</p>
+      </div>
+    `;
+
+    const grid = document.createElement("div");
+    grid.className = "module-grid";
+
+    for (const moduleName of moduleOrder()) {
+      const entry = moduleEntry(moduleName);
+      const card = button("module-card", "", () => {
+        view = { screen: "module", module: moduleName, groupId: "" };
+        renderModule();
+      });
+      card.innerHTML = `<strong>${html(entry.label)}</strong><span>${html(countLabel(entry.groups.length, entry.groupSingular, entry.groupPlural))} / ${html(countLabel(entry.mediaCount, entry.itemSingular, entry.itemPlural))}</span>`;
+      grid.appendChild(card);
+    }
+
+    hero.appendChild(grid);
+    root.appendChild(hero);
+  }
+
+  function groupsForCurrentModule() {
+    const entry = moduleEntry(view.module);
+    return rawGroupsForModule(view.module).map((group) => ({
+      id: group.id,
+      title: group.groupTitle || group.name || group.label,
+      count: group.media.length,
+      countSingular: entry.itemSingular,
+      countPlural: entry.itemPlural
+    }));
+  }
+
+  function moduleTitle() {
+    return moduleEntry(view.module).label;
+  }
+
   function renderModule() {
     clear();
     root.appendChild(renderTopbar());
 
     const head = document.createElement("section");
     head.className = "section-head";
-    const subtitle = view.module === "obra" ? "Etapas com fotos registradas." : "Grupos disponiveis para consulta.";
+    const subtitle = moduleEntry(view.module).description;
     head.innerHTML = `<div><h1>${html(moduleTitle())}</h1><p>${html(subtitle)}</p></div>`;
     head.appendChild(button("back-button", "Voltar", () => {
       view = { screen: "home", module: "", groupId: "" };
@@ -282,6 +409,7 @@
   function shouldOpenGroupInViewer(group) {
     const media = mediaForGroup(group);
     if (!media.length) return false;
+    if (manifest.kind === "executor") return true;
     if (manifest.kind === "engineer" && view.module === "interiores" && group.bucket === "PDF") return false;
     return media.some(isImageItem);
   }
