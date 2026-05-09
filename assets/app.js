@@ -305,7 +305,7 @@
 
   function defaultModuleDescription(moduleName) {
     if (moduleName === "obra") return "Etapas com fotos registradas.";
-    if (moduleName === "arquitetonico") return "Pranchas e fachadas publicadas para consulta.";
+    if (moduleName === "arquitetonico") return "Pranchas, fachadas e refer\u00eancias publicadas para consulta.";
     return "Grupos disponiveis para consulta.";
   }
 

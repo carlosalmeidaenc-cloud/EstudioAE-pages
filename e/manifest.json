@@ -2,7 +2,7 @@
   "schema": 1,
   "kind": "engineer-index",
   "encryption": "none",
-  "generatedAt": "2026-05-09T14:17:18.848Z",
+  "generatedAt": "2026-05-09T14:34:50.372Z",
   "clients": [
     {
       "id": "Lucas",
@@ -33,6 +33,24 @@
         "designMediaCount": 0,
         "obraStageCount": 2,
         "obraPhotoCount": 17,
+        "ignored": {
+          "designEmptyFolders": 156,
+          "designFiles": 0,
+          "obraItems": 0
+        }
+      }
+    },
+    {
+      "id": "Wesler - Lídia",
+      "name": "Wesler - Lídia",
+      "path": "oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
+      "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
+      "updatedAt": "2026-05-09T14:34:50.186Z",
+      "summary": {
+        "designGroupCount": 0,
+        "designMediaCount": 0,
+        "obraStageCount": 0,
+        "obraPhotoCount": 0,
         "ignored": {
           "designEmptyFolders": 156,
           "designFiles": 0,
