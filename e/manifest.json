@@ -2,17 +2,17 @@
   "schema": 1,
   "kind": "engineer-index",
   "encryption": "none",
-  "generatedAt": "2026-05-09T17:44:56.091Z",
+  "generatedAt": "2026-05-09T17:46:39.983Z",
   "clients": [
     {
       "id": "Lucas",
       "name": "Lucas - Jaqueline",
       "path": "RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
-      "updatedAt": "2026-05-09T17:44:51.229Z",
+      "updatedAt": "2026-05-09T17:46:38.866Z",
       "summary": {
         "designGroupCount": 20,
-        "designMediaCount": 58,
+        "designMediaCount": 59,
         "obraStageCount": 6,
         "obraPhotoCount": 183,
         "ignored": {
@@ -27,7 +27,7 @@
       "name": "Thiago Sarmento",
       "path": "nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
-      "updatedAt": "2026-05-09T17:44:55.982Z",
+      "updatedAt": "2026-05-09T17:46:39.873Z",
       "summary": {
         "designGroupCount": 0,
         "designMediaCount": 0,
@@ -45,7 +45,7 @@
       "name": "Wesler - Lídia",
       "path": "oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
-      "updatedAt": "2026-05-09T17:44:56.052Z",
+      "updatedAt": "2026-05-09T17:46:39.944Z",
       "summary": {
         "designGroupCount": 0,
         "designMediaCount": 0,
