@@ -249,7 +249,7 @@
     topbar.className = "topbar";
     let subtitle = "Area protegida";
     if (manifest && manifest.kind === "engineer-index") subtitle = "Area tecnica";
-    else if (manifest && manifest.kind === "executor") subtitle = "Execução";
+    else if (manifest && manifest.kind === "executor") subtitle = manifest.clientName;
     else if (manifest) subtitle = manifest.clientName;
     topbar.innerHTML = `
       <div class="brand">
@@ -299,12 +299,14 @@
 
   function defaultModuleLabel(moduleName) {
     if (moduleName === "obra") return "OBRA";
+    if (moduleName === "arq" && manifest.kind === "executor") return `Projeto: ${manifest.clientName}`;
     if (moduleName === "arquitetonico") return "ARQUITETONICO";
     return "DESIGN DE INTERIORES";
   }
 
   function defaultModuleDescription(moduleName) {
     if (moduleName === "obra") return "Etapas com fotos registradas.";
+    if (moduleName === "arq" && manifest.kind === "executor") return "Ambientes com imagens liberadas para execucao.";
     if (moduleName === "arquitetonico") return "Pranchas, fachadas e refer\u00eancias publicadas para consulta.";
     return "Grupos disponiveis para consulta.";
   }
@@ -318,8 +320,8 @@
       id: moduleName,
       label: module.label || defaultModuleLabel(moduleName),
       description: module.description || defaultModuleDescription(moduleName),
-      groupSingular: module.groupSingular || (moduleName === "obra" ? "etapa" : moduleName === "arquitetonico" ? "pasta" : "grupo"),
-      groupPlural: module.groupPlural || (moduleName === "obra" ? "etapas" : moduleName === "arquitetonico" ? "pastas" : "grupos"),
+      groupSingular: module.groupSingular || (moduleName === "obra" ? "etapa" : moduleName === "arquitetonico" ? "pasta" : "ambiente"),
+      groupPlural: module.groupPlural || (moduleName === "obra" ? "etapas" : moduleName === "arquitetonico" ? "pastas" : "ambientes"),
       itemSingular: module.itemSingular || (moduleName === "obra" ? "foto" : clientLike ? "imagem" : "arquivo"),
       itemPlural: module.itemPlural || (moduleName === "obra" ? "fotos" : clientLike ? "imagens" : "arquivos"),
       directMedia: Boolean(module.directMedia),
@@ -334,7 +336,7 @@
 
   function homeText() {
     if (manifest.kind === "executor") {
-      return "Arquivos técnicos liberados para execução. Escolha a disciplina para consultar as pastas publicadas.";
+      return "Ambientes liberados para consulta.";
     }
     return "Apenas voce tem acesso a essa pagina, pois ela possui um link unico. Escolha abaixo o que deseja acessar.";
   }
@@ -347,7 +349,7 @@
     hero.className = "hero";
     hero.innerHTML = `
       <div class="welcome">
-        <h1>${manifest.kind === "executor" ? "Execução" : `Ola, ${html(manifest.clientName)}`}</h1>
+        <h1>${manifest.kind === "executor" ? `Projeto: ${html(manifest.clientName)}` : `Ola, ${html(manifest.clientName)}`}</h1>
         <p>${html(homeText())}</p>
       </div>
     `;
