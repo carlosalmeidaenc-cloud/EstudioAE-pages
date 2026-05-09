@@ -10,13 +10,6 @@
   const VIEWER_MIN_ZOOM = 1;
   const VIEWER_MAX_ZOOM = 5;
   const VIEWER_ZOOM_STEP = 0.5;
-  const SCRIPT_URL = document.currentScript && document.currentScript.src
-    ? document.currentScript.src
-    : new URL("assets/app.js", window.location.href).href;
-  const ASSET_BASE_URL = new URL("./", SCRIPT_URL).href;
-  const PDFJS_MODULE_URL = new URL("vendor/pdfjs/pdf.mjs", ASSET_BASE_URL).href;
-  const PDFJS_WORKER_URL = new URL("vendor/pdfjs/pdf.worker.mjs", ASSET_BASE_URL).href;
-  let pdfJsPromise = null;
   const cryptoState = {
     encrypted: false,
     key: null,
@@ -621,42 +614,6 @@
     return state;
   }
 
-  async function loadPdfJs() {
-    if (!pdfJsPromise) {
-      pdfJsPromise = import(PDFJS_MODULE_URL).then((pdfjsLib) => {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
-        return pdfjsLib;
-      });
-    }
-    return pdfJsPromise;
-  }
-
-  async function renderPdfCanvases(url, container, stage, isActive) {
-    const pdfjsLib = await loadPdfJs();
-    const pdf = await pdfjsLib.getDocument(url).promise;
-    const pageWidth = Math.max(260, Math.min(980, (stage.clientWidth || window.innerWidth || 980) - 88));
-    const ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-    container.innerHTML = "";
-
-    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-      if (!isActive()) return;
-      const page = await pdf.getPage(pageNumber);
-      const baseViewport = page.getViewport({ scale: 1 });
-      const displayScale = pageWidth / baseViewport.width;
-      const viewport = page.getViewport({ scale: displayScale * ratio });
-      const canvas = document.createElement("canvas");
-      canvas.className = "viewer-pdf-page";
-      canvas.width = Math.ceil(viewport.width);
-      canvas.height = Math.ceil(viewport.height);
-      canvas.style.width = `${Math.ceil(viewport.width / ratio)}px`;
-      canvas.style.height = `${Math.ceil(viewport.height / ratio)}px`;
-      const context = canvas.getContext("2d", { alpha: false });
-      await page.render({ canvasContext: context, viewport }).promise;
-      if (!isActive()) return;
-      container.appendChild(canvas);
-    }
-  }
-
   async function downloadMedia(item) {
     const url = await mediaUrl(item);
     const link = document.createElement("a");
@@ -727,7 +684,6 @@
     overlay.querySelector(".viewer-footer").appendChild(renderViewerDots(media));
 
     const stage = overlay.querySelector("[data-viewer-stage]");
-    stage.classList.toggle("viewer-stage-pdf", isPdfItem(item));
     const zoomControls = overlay.querySelector("[data-viewer-zoom-controls]");
     let zoomState = null;
     const mountVisual = (node) => {
@@ -754,26 +710,6 @@
       }).catch(() => {
         const loading = stage.querySelector(".viewer-loading");
         if (loading) loading.textContent = "Não foi possível abrir a imagem.";
-      });
-    } else if (isPdfItem(item)) {
-      mediaUrl(item).then((url) => {
-        if (renderId !== viewerRenderId || !viewer.open) return;
-        const pages = document.createElement("div");
-        pages.className = "viewer-pdf-pages";
-        pages.setAttribute("aria-label", title);
-        pages.innerHTML = `<div class="viewer-loading viewer-loading-inline">Carregando PDF...</div>`;
-        mountVisual(pages);
-        renderPdfCanvases(url, pages, stage, () => renderId === viewerRenderId && viewer.open).catch(() => {
-          pages.innerHTML = "";
-          const fallback = document.createElement("div");
-          fallback.className = "viewer-document";
-          fallback.innerHTML = `<strong>${html(item.fileName || "PDF")}</strong><span>PDF</span>`;
-          fallback.appendChild(button("viewer-button", "Abrir arquivo", () => openMediaExternally(item).catch(() => {})));
-          pages.appendChild(fallback);
-        });
-      }).catch(() => {
-        const loading = stage.querySelector(".viewer-loading");
-        if (loading) loading.textContent = "Nao foi possivel abrir o PDF.";
       });
     } else {
       const panel = document.createElement("div");
