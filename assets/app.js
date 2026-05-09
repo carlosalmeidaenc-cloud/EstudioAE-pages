@@ -322,6 +322,7 @@
       groupPlural: module.groupPlural || (moduleName === "obra" ? "etapas" : moduleName === "arquitetonico" ? "pastas" : "grupos"),
       itemSingular: module.itemSingular || (moduleName === "obra" ? "foto" : clientLike ? "imagem" : "arquivo"),
       itemPlural: module.itemPlural || (moduleName === "obra" ? "fotos" : clientLike ? "imagens" : "arquivos"),
+      directMedia: Boolean(module.directMedia),
       groups,
       mediaCount
     };
@@ -397,9 +398,16 @@
     }));
     root.appendChild(head);
 
+    const entry = moduleEntry(view.module);
     const groups = groupsForCurrentModule();
     if (!groups.length) {
       renderEmpty(view.module === "obra" ? "Nenhuma foto de obra disponivel." : "Nenhum arquivo disponivel.");
+      return;
+    }
+
+    if (entry.directMedia && groups.length === 1) {
+      view = { screen: "group", module: view.module, groupId: groups[0].id };
+      renderGroup();
       return;
     }
 
@@ -809,14 +817,21 @@
 
   function renderGroup() {
     const group = selectedGroup();
+    const entry = moduleEntry(view.module);
     clear();
     root.appendChild(renderTopbar());
 
     const title = group && (group.groupTitle || group.name || group.label);
+    const subtitle = entry.directMedia ? entry.description : moduleTitle();
     const head = document.createElement("section");
     head.className = "section-head";
-    head.innerHTML = `<div><h1>${html(title || moduleTitle())}</h1><p>${html(moduleTitle())}</p></div>`;
+    head.innerHTML = `<div><h1>${html(title || moduleTitle())}</h1><p>${html(subtitle)}</p></div>`;
     head.appendChild(button("back-button", "Voltar", () => {
+      if (entry.directMedia) {
+        view = { screen: "home", module: "", groupId: "" };
+        renderHome();
+        return;
+      }
       view = { screen: "module", module: view.module, groupId: "" };
       renderModule();
     }));
