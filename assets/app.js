@@ -10,8 +10,12 @@
   const VIEWER_MIN_ZOOM = 1;
   const VIEWER_MAX_ZOOM = 5;
   const VIEWER_ZOOM_STEP = 0.5;
-  const PDFJS_MODULE_URL = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs";
-  const PDFJS_WORKER_URL = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs";
+  const SCRIPT_URL = document.currentScript && document.currentScript.src
+    ? document.currentScript.src
+    : new URL("assets/app.js", window.location.href).href;
+  const ASSET_BASE_URL = new URL("./", SCRIPT_URL).href;
+  const PDFJS_MODULE_URL = new URL("vendor/pdfjs/pdf.mjs", ASSET_BASE_URL).href;
+  const PDFJS_WORKER_URL = new URL("vendor/pdfjs/pdf.worker.mjs", ASSET_BASE_URL).href;
   let pdfJsPromise = null;
   const cryptoState = {
     encrypted: false,
@@ -785,15 +789,54 @@
     let lastX = 0;
     let lastY = 0;
     let pointerId = null;
+    const activePointers = new Map();
+    let pinchStartDistance = 0;
+    let pinchStartScale = VIEWER_MIN_ZOOM;
+    let didPinch = false;
+    const pointerDistance = () => {
+      const points = Array.from(activePointers.values());
+      if (points.length < 2) return 0;
+      return Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y);
+    };
+    const resetSinglePointerFromRemaining = () => {
+      const first = activePointers.entries().next();
+      if (first.done) {
+        pointerId = null;
+        return;
+      }
+      pointerId = first.value[0];
+      startX = first.value[1].x;
+      startY = first.value[1].y;
+      lastX = first.value[1].x;
+      lastY = first.value[1].y;
+    };
     stage.addEventListener("pointerdown", (event) => {
+      activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      stage.setPointerCapture(event.pointerId);
+      if (activePointers.size === 2 && zoomState) {
+        didPinch = true;
+        pinchStartDistance = pointerDistance();
+        pinchStartScale = zoomState.scale;
+        return;
+      }
       pointerId = event.pointerId;
       startX = event.clientX;
       startY = event.clientY;
       lastX = event.clientX;
       lastY = event.clientY;
-      stage.setPointerCapture(pointerId);
     });
     stage.addEventListener("pointermove", (event) => {
+      if (activePointers.has(event.pointerId)) {
+        activePointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      }
+      if (activePointers.size >= 2 && zoomState) {
+        didPinch = true;
+        const distance = pointerDistance();
+        if (pinchStartDistance > 0) {
+          zoomState.setScale(pinchStartScale * (distance / pinchStartDistance));
+        }
+        return;
+      }
       if (pointerId !== event.pointerId || !zoomState || !zoomState.isZoomed()) return;
       const deltaX = event.clientX - lastX;
       const deltaY = event.clientY - lastY;
@@ -802,6 +845,15 @@
       zoomState.panBy(deltaX, deltaY);
     });
     stage.addEventListener("pointerup", (event) => {
+      activePointers.delete(event.pointerId);
+      if (didPinch) {
+        if (activePointers.size < 2) {
+          didPinch = false;
+          pinchStartDistance = 0;
+          resetSinglePointerFromRemaining();
+        }
+        return;
+      }
       if (pointerId !== event.pointerId) return;
       const deltaX = event.clientX - startX;
       const deltaY = event.clientY - startY;
@@ -816,8 +868,11 @@
         moveViewerGroup(deltaY < 0 ? 1 : -1);
       }
     });
-    stage.addEventListener("pointercancel", () => {
+    stage.addEventListener("pointercancel", (event) => {
+      activePointers.delete(event.pointerId);
       pointerId = null;
+      didPinch = false;
+      pinchStartDistance = 0;
     });
 
     document.body.appendChild(overlay);
