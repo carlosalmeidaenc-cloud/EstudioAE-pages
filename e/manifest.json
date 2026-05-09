@@ -2,21 +2,21 @@
   "schema": 1,
   "kind": "engineer-index",
   "encryption": "none",
-  "generatedAt": "2026-05-09T01:20:37.315Z",
+  "generatedAt": "2026-05-09T01:55:52.701Z",
   "clients": [
     {
       "id": "Lucas",
       "name": "Lucas - Jaqueline",
       "path": "RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
-      "updatedAt": "2026-05-09T01:20:37.215Z",
+      "updatedAt": "2026-05-09T01:55:50.700Z",
       "summary": {
-        "designGroupCount": 18,
-        "designMediaCount": 48,
+        "designGroupCount": 19,
+        "designMediaCount": 54,
         "obraStageCount": 6,
         "obraPhotoCount": 183,
         "ignored": {
-          "designEmptyFolders": 34,
+          "designEmptyFolders": 33,
           "designFiles": 1,
           "obraItems": 0
         }
