@@ -206,6 +206,10 @@ a {
   cursor: zoom-in;
 }
 
+.media-card img.is-loading {
+  opacity: 0.62;
+}
+
 .media-placeholder {
   display: grid;
   place-items: center;
@@ -314,6 +318,7 @@ a {
   align-items: center;
   gap: 8px;
   flex: 0 0 auto;
+  flex-wrap: wrap;
 }
 
 .viewer-button {
@@ -328,6 +333,31 @@ a {
   text-decoration: none;
   background: rgba(255, 255, 255, 0.08);
   cursor: pointer;
+}
+
+.viewer-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.viewer-zoom-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.viewer-zoom-controls[hidden] {
+  display: none;
+}
+
+.viewer-zoom-button {
+  width: 38px;
+  padding: 0;
+}
+
+.viewer-zoom-reset {
+  min-width: 66px;
+  padding: 0 10px;
 }
 
 .viewer-button:hover,
@@ -347,16 +377,74 @@ a {
   min-height: 0;
   overflow: hidden;
   touch-action: none;
+  user-select: none;
 }
 
-.viewer-stage img {
-  display: block;
+.viewer-stage.viewer-stage-pdf:not(.is-zoomed) {
+  touch-action: pan-y;
+}
+
+.viewer-viewport {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.viewer-zoom-content {
+  display: grid;
+  place-items: center;
   max-width: 100%;
   max-height: 100%;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.viewer-zoom-content.is-zoomed,
+.viewer-stage.is-zoomed {
+  cursor: grab;
+}
+
+.viewer-stage.is-zoomed:active {
+  cursor: grabbing;
+}
+
+.viewer-image {
+  display: block;
+  max-width: min(100%, calc(100vw - 72px));
+  max-height: calc(100vh - 170px);
   object-fit: contain;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   background: #111614;
+}
+
+.viewer-pdf-pages {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 980px);
+  max-height: calc(100vh - 170px);
+  overflow: auto;
+  padding: 10px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow);
+}
+
+.viewer-stage.is-zoomed .viewer-pdf-pages {
+  overflow: visible;
+}
+
+.viewer-pdf-page {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 3px;
+  background: #fff;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.28);
 }
 
 .viewer-loading,
@@ -538,6 +626,28 @@ a {
 
   .viewer-button {
     flex: 1;
+  }
+
+  .viewer-zoom-controls {
+    flex: 1 1 100%;
+  }
+
+  .viewer-zoom-button {
+    flex: 0 0 44px;
+  }
+
+  .viewer-zoom-reset {
+    flex: 1;
+  }
+
+  .viewer-image,
+  .viewer-pdf-pages {
+    max-height: calc(100vh - 220px);
+  }
+
+  .viewer-pdf-pages {
+    width: min(100%, calc(100vw - 24px));
+    padding: 6px;
   }
 
   .viewer-nav {

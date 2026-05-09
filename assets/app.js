@@ -7,6 +7,12 @@
   let view = { screen: "home", module: "", groupId: "" };
   let viewer = { open: false, module: "", groupId: "", index: 0 };
   let viewerRenderId = 0;
+  const VIEWER_MIN_ZOOM = 1;
+  const VIEWER_MAX_ZOOM = 5;
+  const VIEWER_ZOOM_STEP = 0.5;
+  const PDFJS_MODULE_URL = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.mjs";
+  const PDFJS_WORKER_URL = "https://cdn.jsdelivr.net/npm/pdfjs-dist@4.10.38/build/pdf.worker.mjs";
+  let pdfJsPromise = null;
   const cryptoState = {
     encrypted: false,
     key: null,
@@ -453,6 +459,27 @@
     return item && (item.type === "image" || /^image\//.test(item.mime || ""));
   }
 
+  function isPdfItem(item) {
+    return item && (
+      item.type === "pdf" ||
+      item.ext === ".pdf" ||
+      item.mime === "application/pdf" ||
+      /\.pdf$/i.test(item.fileName || "")
+    );
+  }
+
+  function isZoomableItem(item) {
+    return isImageItem(item) || isPdfItem(item);
+  }
+
+  function clampNumber(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function zoomLabel(scale) {
+    return `${Math.round(scale * 100)}%`;
+  }
+
   async function mediaUrl(item) {
     if (!item || !item.mediaPath) throw new Error("midia sem caminho");
     if (!cryptoState.encrypted) return item.mediaPath;
@@ -537,6 +564,95 @@
     return dots;
   }
 
+  function createViewerZoom(stage, content, controls) {
+    const label = controls.querySelector("[data-viewer-zoom-label]");
+    const zoomOut = controls.querySelector("[data-viewer-zoom-out]");
+    const zoomIn = controls.querySelector("[data-viewer-zoom-in]");
+    const zoomReset = controls.querySelector("[data-viewer-zoom-reset]");
+    const state = {
+      scale: VIEWER_MIN_ZOOM,
+      x: 0,
+      y: 0,
+      isZoomed() {
+        return this.scale > VIEWER_MIN_ZOOM + 0.01;
+      },
+      apply() {
+        if (!this.isZoomed()) {
+          this.x = 0;
+          this.y = 0;
+        }
+        content.style.transform = `translate3d(${this.x}px, ${this.y}px, 0) scale(${this.scale})`;
+        content.classList.toggle("is-zoomed", this.isZoomed());
+        stage.classList.toggle("is-zoomed", this.isZoomed());
+        label.textContent = zoomLabel(this.scale);
+        zoomOut.disabled = this.scale <= VIEWER_MIN_ZOOM;
+        zoomIn.disabled = this.scale >= VIEWER_MAX_ZOOM;
+      },
+      setScale(value) {
+        this.scale = clampNumber(value, VIEWER_MIN_ZOOM, VIEWER_MAX_ZOOM);
+        this.apply();
+      },
+      panBy(deltaX, deltaY) {
+        if (!this.isZoomed()) return;
+        this.x += deltaX;
+        this.y += deltaY;
+        this.apply();
+      }
+    };
+
+    controls.hidden = false;
+    zoomOut.addEventListener("click", () => state.setScale(state.scale - VIEWER_ZOOM_STEP));
+    zoomIn.addEventListener("click", () => state.setScale(state.scale + VIEWER_ZOOM_STEP));
+    zoomReset.addEventListener("click", () => state.setScale(VIEWER_MIN_ZOOM));
+    content.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      state.setScale(state.isZoomed() ? VIEWER_MIN_ZOOM : 2);
+    });
+    stage.addEventListener("wheel", (event) => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      state.setScale(state.scale + (event.deltaY > 0 ? -VIEWER_ZOOM_STEP : VIEWER_ZOOM_STEP));
+    }, { passive: false });
+    state.apply();
+    return state;
+  }
+
+  async function loadPdfJs() {
+    if (!pdfJsPromise) {
+      pdfJsPromise = import(PDFJS_MODULE_URL).then((pdfjsLib) => {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
+        return pdfjsLib;
+      });
+    }
+    return pdfJsPromise;
+  }
+
+  async function renderPdfCanvases(url, container, stage, isActive) {
+    const pdfjsLib = await loadPdfJs();
+    const pdf = await pdfjsLib.getDocument(url).promise;
+    const pageWidth = Math.max(260, Math.min(980, (stage.clientWidth || window.innerWidth || 980) - 88));
+    const ratio = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+    container.innerHTML = "";
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      if (!isActive()) return;
+      const page = await pdf.getPage(pageNumber);
+      const baseViewport = page.getViewport({ scale: 1 });
+      const displayScale = pageWidth / baseViewport.width;
+      const viewport = page.getViewport({ scale: displayScale * ratio });
+      const canvas = document.createElement("canvas");
+      canvas.className = "viewer-pdf-page";
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+      canvas.style.width = `${Math.ceil(viewport.width / ratio)}px`;
+      canvas.style.height = `${Math.ceil(viewport.height / ratio)}px`;
+      const context = canvas.getContext("2d", { alpha: false });
+      await page.render({ canvasContext: context, viewport }).promise;
+      if (!isActive()) return;
+      container.appendChild(canvas);
+    }
+  }
+
   async function downloadMedia(item) {
     const url = await mediaUrl(item);
     const link = document.createElement("a");
@@ -581,6 +697,11 @@
           <span>${html(groupLabel)}</span>
         </div>
         <div class="viewer-actions">
+          <div class="viewer-zoom-controls" data-viewer-zoom-controls hidden>
+            <button type="button" class="viewer-button viewer-zoom-button" data-viewer-zoom-out aria-label="Reduzir zoom">-</button>
+            <button type="button" class="viewer-button viewer-zoom-reset" data-viewer-zoom-reset aria-label="Redefinir zoom"><span data-viewer-zoom-label>100%</span></button>
+            <button type="button" class="viewer-button viewer-zoom-button" data-viewer-zoom-in aria-label="Ampliar zoom">+</button>
+          </div>
           <button type="button" class="viewer-button" data-viewer-download>Baixar</button>
           <button type="button" class="viewer-button" data-viewer-close>Voltar</button>
         </div>
@@ -602,17 +723,53 @@
     overlay.querySelector(".viewer-footer").appendChild(renderViewerDots(media));
 
     const stage = overlay.querySelector("[data-viewer-stage]");
+    stage.classList.toggle("viewer-stage-pdf", isPdfItem(item));
+    const zoomControls = overlay.querySelector("[data-viewer-zoom-controls]");
+    let zoomState = null;
+    const mountVisual = (node) => {
+      const viewport = document.createElement("div");
+      viewport.className = "viewer-viewport";
+      const content = document.createElement("div");
+      content.className = "viewer-zoom-content";
+      content.appendChild(node);
+      viewport.appendChild(content);
+      const loading = stage.querySelector(".viewer-loading");
+      if (loading) loading.replaceWith(viewport);
+      if (isZoomableItem(item)) {
+        zoomState = createViewerZoom(stage, content, zoomControls);
+      }
+    };
     if (isImageItem(item)) {
       mediaUrl(item).then((url) => {
         if (renderId !== viewerRenderId || !viewer.open) return;
         const image = document.createElement("img");
+        image.className = "viewer-image";
         image.src = url;
         image.alt = title;
-        const loading = stage.querySelector(".viewer-loading");
-        if (loading) loading.replaceWith(image);
+        mountVisual(image);
       }).catch(() => {
         const loading = stage.querySelector(".viewer-loading");
         if (loading) loading.textContent = "Não foi possível abrir a imagem.";
+      });
+    } else if (isPdfItem(item)) {
+      mediaUrl(item).then((url) => {
+        if (renderId !== viewerRenderId || !viewer.open) return;
+        const pages = document.createElement("div");
+        pages.className = "viewer-pdf-pages";
+        pages.setAttribute("aria-label", title);
+        pages.innerHTML = `<div class="viewer-loading viewer-loading-inline">Carregando PDF...</div>`;
+        mountVisual(pages);
+        renderPdfCanvases(url, pages, stage, () => renderId === viewerRenderId && viewer.open).catch(() => {
+          pages.innerHTML = "";
+          const fallback = document.createElement("div");
+          fallback.className = "viewer-document";
+          fallback.innerHTML = `<strong>${html(item.fileName || "PDF")}</strong><span>PDF</span>`;
+          fallback.appendChild(button("viewer-button", "Abrir arquivo", () => openMediaExternally(item).catch(() => {})));
+          pages.appendChild(fallback);
+        });
+      }).catch(() => {
+        const loading = stage.querySelector(".viewer-loading");
+        if (loading) loading.textContent = "Nao foi possivel abrir o PDF.";
       });
     } else {
       const panel = document.createElement("div");
@@ -625,24 +782,42 @@
 
     let startX = 0;
     let startY = 0;
+    let lastX = 0;
+    let lastY = 0;
     let pointerId = null;
     stage.addEventListener("pointerdown", (event) => {
       pointerId = event.pointerId;
       startX = event.clientX;
       startY = event.clientY;
+      lastX = event.clientX;
+      lastY = event.clientY;
       stage.setPointerCapture(pointerId);
+    });
+    stage.addEventListener("pointermove", (event) => {
+      if (pointerId !== event.pointerId || !zoomState || !zoomState.isZoomed()) return;
+      const deltaX = event.clientX - lastX;
+      const deltaY = event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      zoomState.panBy(deltaX, deltaY);
     });
     stage.addEventListener("pointerup", (event) => {
       if (pointerId !== event.pointerId) return;
       const deltaX = event.clientX - startX;
       const deltaY = event.clientY - startY;
       pointerId = null;
+      if (zoomState && zoomState.isZoomed()) return;
       if (Math.max(Math.abs(deltaX), Math.abs(deltaY)) < 42) return;
       if (Math.abs(deltaX) >= Math.abs(deltaY)) {
         moveViewerImage(deltaX < 0 ? 1 : -1);
+      } else if (isPdfItem(item)) {
+        return;
       } else {
         moveViewerGroup(deltaY < 0 ? 1 : -1);
       }
+    });
+    stage.addEventListener("pointercancel", () => {
+      pointerId = null;
     });
 
     document.body.appendChild(overlay);
@@ -677,18 +852,28 @@
       const card = document.createElement("article");
       card.className = "media-card";
 
-      if (!cryptoState.encrypted && isImageItem(item)) {
+      if (isImageItem(item)) {
         const img = document.createElement("img");
         img.loading = "lazy";
         img.alt = text(item.title || item.fileName || title || "Imagem");
-        img.src = item.mediaPath;
+        if (cryptoState.encrypted) {
+          img.className = "is-loading";
+          mediaUrl(item).then((url) => {
+            img.src = url;
+            img.classList.remove("is-loading");
+          }).catch(() => {
+            img.classList.remove("is-loading");
+          });
+        } else {
+          img.src = item.mediaPath;
+        }
         img.addEventListener("click", () => openViewer(index));
         card.appendChild(img);
       } else {
         const placeholder = document.createElement("button");
         placeholder.type = "button";
         placeholder.className = "media-placeholder";
-        placeholder.innerHTML = `<strong>${isImageItem(item) ? "Imagem" : "Arquivo"}</strong><span>${html(item.ext || item.mime || "")}</span>`;
+        placeholder.innerHTML = `<strong>${isPdfItem(item) ? "PDF" : "Arquivo"}</strong><span>${html(item.ext || item.mime || "")}</span>`;
         placeholder.addEventListener("click", () => openViewer(index));
         card.appendChild(placeholder);
       }
