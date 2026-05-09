@@ -246,7 +246,7 @@
     topbar.className = "topbar";
     let subtitle = "Area protegida";
     if (manifest && manifest.kind === "engineer-index") subtitle = "Area tecnica";
-    else if (manifest && manifest.kind === "executor") subtitle = "Area do executor";
+    else if (manifest && manifest.kind === "executor") subtitle = "Execução";
     else if (manifest) subtitle = manifest.clientName;
     topbar.innerHTML = `
       <div class="brand">
@@ -318,7 +318,7 @@
 
   function homeText() {
     if (manifest.kind === "executor") {
-      return "Arquivos tecnicos liberados para execucao. Escolha a disciplina para consultar os ambientes.";
+      return "Arquivos técnicos liberados para execução. Escolha a disciplina para consultar as pastas publicadas.";
     }
     return "Apenas voce tem acesso a essa pagina, pois ela possui um link unico. Escolha abaixo o que deseja acessar.";
   }
@@ -331,7 +331,7 @@
     hero.className = "hero";
     hero.innerHTML = `
       <div class="welcome">
-        <h1>${manifest.kind === "executor" ? "Executor" : `Ola, ${html(manifest.clientName)}`}</h1>
+        <h1>${manifest.kind === "executor" ? "Execução" : `Ola, ${html(manifest.clientName)}`}</h1>
         <p>${html(homeText())}</p>
       </div>
     `;
