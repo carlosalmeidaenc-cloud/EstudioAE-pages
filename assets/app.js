@@ -80,7 +80,7 @@
 
   async function decryptBytes(buffer, key) {
     const bytes = new Uint8Array(buffer);
-    if (bytes.length < 29) throw new Error("arquivo criptografado invalido");
+    if (bytes.length < 29) throw new Error("arquivo criptografado inválido");
     const iv = bytes.slice(0, 12);
     const payload = bytes.slice(12);
     return crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, payload);
@@ -211,7 +211,7 @@
     root.appendChild(hero);
 
     if (!clients.length) {
-      renderEmpty("Nenhum cliente publicado no GitPages tecnico.");
+      renderEmpty("Nenhum cliente publicado no GitPages técnico.");
       return;
     }
 
@@ -247,15 +247,15 @@
   function renderTopbar() {
     const topbar = document.createElement("header");
     topbar.className = "topbar";
-    let subtitle = "Area protegida";
-    if (manifest && manifest.kind === "engineer-index") subtitle = "Area tecnica";
+    let subtitle = "Área protegida";
+    if (manifest && manifest.kind === "engineer-index") subtitle = "Área técnica";
     else if (manifest && manifest.kind === "executor") subtitle = manifest.clientName;
     else if (manifest) subtitle = manifest.clientName;
     topbar.innerHTML = `
       <div class="brand">
         <div class="brand-mark">AE</div>
         <div>
-          <p class="brand-title">Estudio AE</p>
+          <p class="brand-title">Estúdio AE</p>
           <p class="brand-subtitle">${html(subtitle)}</p>
         </div>
       </div>
@@ -300,13 +300,13 @@
   function defaultModuleLabel(moduleName) {
     if (moduleName === "obra") return "OBRA";
     if (moduleName === "arq" && manifest.kind === "executor") return `Projeto: ${manifest.clientName}`;
-    if (moduleName === "arquitetonico") return "ARQUITETONICO";
+    if (moduleName === "arquitetonico") return "ARQUITETÔNICO";
     return "DESIGN DE INTERIORES";
   }
 
   function defaultModuleDescription(moduleName) {
     if (moduleName === "obra") return "Etapas com fotos registradas.";
-    if (moduleName === "arq" && manifest.kind === "executor") return "Ambientes com imagens liberadas para execucao.";
+    if (moduleName === "arq" && manifest.kind === "executor") return "Ambientes com imagens liberadas para execução.";
     if (moduleName === "arquitetonico") return "Pranchas, fachadas e refer\u00eancias publicadas para consulta.";
     return "Grupos disponiveis para consulta.";
   }
@@ -338,7 +338,7 @@
     if (manifest.kind === "executor") {
       return "Ambientes liberados para consulta.";
     }
-    return "Apenas voce tem acesso a essa pagina, pois ela possui um link unico. Escolha abaixo o que deseja acessar.";
+    return "Apenas você tem acesso a essa página, pois ela possui um link único. Escolha abaixo o que deseja acessar.";
   }
 
   function renderHome() {
@@ -349,7 +349,7 @@
     hero.className = "hero";
     hero.innerHTML = `
       <div class="welcome">
-        <h1>${manifest.kind === "executor" ? `Projeto: ${html(manifest.clientName)}` : `Ola, ${html(manifest.clientName)}`}</h1>
+        <h1>${manifest.kind === "executor" ? `Projeto: ${html(manifest.clientName)}` : `Olá, ${html(manifest.clientName)}`}</h1>
         <p>${html(homeText())}</p>
       </div>
     `;
@@ -403,7 +403,7 @@
     const entry = moduleEntry(view.module);
     const groups = groupsForCurrentModule();
     if (!groups.length) {
-      renderEmpty(view.module === "obra" ? "Nenhuma foto de obra disponivel." : "Nenhum arquivo disponivel.");
+      renderEmpty(view.module === "obra" ? "Nenhuma foto de obra disponível." : "Nenhum arquivo disponível.");
       return;
     }
 
@@ -496,7 +496,7 @@
   }
 
   async function mediaUrl(item) {
-    if (!item || !item.mediaPath) throw new Error("midia sem caminho");
+    if (!item || !item.mediaPath) throw new Error("mídia sem caminho");
     if (!cryptoState.encrypted) return item.mediaPath;
     if (cryptoState.mediaCache.has(item.mediaPath)) return cryptoState.mediaCache.get(item.mediaPath);
     const response = await fetch(item.mediaPath, { cache: "force-cache" });
@@ -841,7 +841,7 @@
 
     const media = mediaForGroup(group);
     if (!media.length) {
-      renderEmpty("Nenhum arquivo disponivel.");
+      renderEmpty("Nenhum arquivo disponível.");
       return;
     }
 
@@ -949,7 +949,7 @@
     }
 
     if (!crypto.subtle) {
-      throw new Error("Web Crypto indisponivel neste navegador.");
+      throw new Error("Web Crypto indisponível neste navegador.");
     }
 
     if (publicManifest.encryption === "aes-gcm") {
