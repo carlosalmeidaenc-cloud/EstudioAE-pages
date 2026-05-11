@@ -2,14 +2,14 @@
   "schema": 1,
   "kind": "engineer-index",
   "encryption": "none",
-  "generatedAt": "2026-05-11T21:23:23.625Z",
+  "generatedAt": "2026-05-11T21:31:15.018Z",
   "clients": [
     {
       "id": "Lucas",
       "name": "Lucas - Jaqueline",
       "path": "RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
-      "updatedAt": "2026-05-11T21:23:23.217Z",
+      "updatedAt": "2026-05-11T21:31:14.818Z",
       "summary": {
         "designGroupCount": 19,
         "designMediaCount": 59,
@@ -23,29 +23,11 @@
       }
     },
     {
-      "id": "temp",
-      "name": "temp",
-      "path": "9f0n55JO-PNqk3kCz3e_Wn1wVPb7-eBK/",
-      "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/9f0n55JO-PNqk3kCz3e_Wn1wVPb7-eBK/",
-      "updatedAt": "2026-05-11T21:23:23.412Z",
-      "summary": {
-        "designGroupCount": 0,
-        "designMediaCount": 0,
-        "obraStageCount": 0,
-        "obraPhotoCount": 0,
-        "ignored": {
-          "designEmptyFolders": 156,
-          "designFiles": 0,
-          "obraItems": 0
-        }
-      }
-    },
-    {
       "id": "Thiago Sarmento",
       "name": "Thiago Sarmento",
       "path": "nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
-      "updatedAt": "2026-05-11T21:23:23.473Z",
+      "updatedAt": "2026-05-11T21:31:14.917Z",
       "summary": {
         "designGroupCount": 0,
         "designMediaCount": 0,
@@ -63,7 +45,7 @@
       "name": "Wesler - Lídia",
       "path": "oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
-      "updatedAt": "2026-05-11T21:23:23.539Z",
+      "updatedAt": "2026-05-11T21:31:14.975Z",
       "summary": {
         "designGroupCount": 0,
         "designMediaCount": 0,
@@ -71,24 +53,6 @@
         "obraPhotoCount": 0,
         "ignored": {
           "designEmptyFolders": 156,
-          "designFiles": 0,
-          "obraItems": 0
-        }
-      }
-    },
-    {
-      "id": "Wesler IAC 2",
-      "name": "Wesler IAC 2",
-      "path": "fHfckzsMBFDzlp-HlcRwuh3UmX4T7woI/",
-      "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/fHfckzsMBFDzlp-HlcRwuh3UmX4T7woI/",
-      "updatedAt": "2026-05-11T21:23:23.587Z",
-      "summary": {
-        "designGroupCount": 0,
-        "designMediaCount": 0,
-        "obraStageCount": 0,
-        "obraPhotoCount": 0,
-        "ignored": {
-          "designEmptyFolders": 0,
           "designFiles": 0,
           "obraItems": 0
         }
