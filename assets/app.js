@@ -263,14 +263,38 @@
     return topbar;
   }
 
+  function normalizeGroup(group) {
+    const children = Array.isArray(group.children) ? group.children.map(normalizeGroup) : [];
+    return {
+      ...group,
+      groupTitle: group.groupTitle || group.name,
+      media: group.media || [],
+      children
+    };
+  }
+
+  function groupMediaCount(group) {
+    return (group && Array.isArray(group.media) ? group.media.length : 0)
+      + (group && Array.isArray(group.children) ? group.children.reduce((sum, child) => sum + groupMediaCount(child), 0) : 0);
+  }
+
+  function flattenGroups(groups) {
+    const result = [];
+    for (const group of groups || []) {
+      result.push(group);
+      if (Array.isArray(group.children) && group.children.length) result.push(...flattenGroups(group.children));
+    }
+    return result;
+  }
+
+  function findGroupById(groups, id) {
+    return flattenGroups(groups).find((group) => group.id === id) || null;
+  }
+
   function normalizeModuleGroups(module) {
     if (!module || typeof module !== "object") return [];
     if (Array.isArray(module.groups)) {
-      return module.groups.map((group) => ({
-        ...group,
-        groupTitle: group.name,
-        media: group.media || []
-      }));
+      return module.groups.map(normalizeGroup);
     }
     if (Array.isArray(module.environments)) {
       return module.environments.map((environment) => ({
@@ -314,7 +338,7 @@
   function moduleEntry(moduleName) {
     const module = manifest.modules && manifest.modules[moduleName] ? manifest.modules[moduleName] : {};
     const groups = normalizeModuleGroups(module);
-    const mediaCount = groups.reduce((sum, entry) => sum + entry.media.length, 0);
+    const mediaCount = groups.reduce((sum, entry) => sum + groupMediaCount(entry), 0);
     const clientLike = manifest.kind === "client" || manifest.kind === "client-preview";
     return {
       id: moduleName,
@@ -376,7 +400,7 @@
     return rawGroupsForModule(view.module).map((group) => ({
       id: group.id,
       title: group.groupTitle || group.name || group.label,
-      count: group.media.length,
+      count: groupMediaCount(group),
       countSingular: entry.itemSingular,
       countPlural: entry.itemPlural
     }));
@@ -424,11 +448,15 @@
   }
 
   function selectedGroup() {
-    return rawGroupsForModule(view.module).find((group) => group.id === view.groupId) || null;
+    return findGroupById(rawGroupsForModule(view.module), view.groupId);
   }
 
   function mediaForGroup(group) {
     return group ? group.media || [] : [];
+  }
+
+  function childGroupsForGroup(group) {
+    return group && Array.isArray(group.children) ? group.children : [];
   }
 
   function shouldOpenGroupInViewer(group) {
@@ -456,7 +484,7 @@
   }
 
   function currentViewerGroup() {
-    return rawGroupsForModule(viewer.module).find((group) => group.id === viewer.groupId) || null;
+    return findGroupById(rawGroupsForModule(viewer.module), viewer.groupId);
   }
 
   function currentViewerMedia() {
@@ -551,7 +579,7 @@
 
   function moveViewerGroup(delta) {
     if (!viewer.open) return;
-    const groups = rawGroupsForModule(viewer.module).filter((group) => group.media.length);
+    const groups = flattenGroups(rawGroupsForModule(viewer.module)).filter((group) => mediaForGroup(group).length);
     if (groups.length < 2) return;
     const currentIndex = Math.max(0, groups.findIndex((group) => group.id === viewer.groupId));
     const nextIndex = (currentIndex + delta + groups.length) % groups.length;
@@ -829,6 +857,12 @@
     head.className = "section-head";
     head.innerHTML = `<div><h1>${html(title || moduleTitle())}</h1><p>${html(subtitle)}</p></div>`;
     head.appendChild(button("back-button", "Voltar", () => {
+      const parent = group && group.parentId ? findGroupById(rawGroupsForModule(view.module), group.parentId) : null;
+      if (parent) {
+        view = { screen: "group", module: view.module, groupId: parent.id };
+        renderGroup();
+        return;
+      }
       if (entry.directMedia) {
         view = { screen: "home", module: "", groupId: "" };
         renderHome();
@@ -838,6 +872,19 @@
       renderModule();
     }));
     root.appendChild(head);
+
+    const childGroups = childGroupsForGroup(group);
+    if (childGroups.length) {
+      const grid = document.createElement("section");
+      grid.className = "folder-grid";
+      for (const child of childGroups) {
+        const card = button("folder-card", "", () => openGroup(child.id));
+        card.innerHTML = `<strong>${html(child.groupTitle || child.name || child.label)}</strong><span>${html(countLabel(groupMediaCount(child), entry.itemSingular, entry.itemPlural))}</span>`;
+        grid.appendChild(card);
+      }
+      root.appendChild(grid);
+      return;
+    }
 
     const media = mediaForGroup(group);
     if (!media.length) {
