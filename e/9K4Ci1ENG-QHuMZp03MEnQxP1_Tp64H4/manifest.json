@@ -4,7 +4,7 @@
   "encryption": "pbkdf2-aes-gcm",
   "manifestPath": "manifest.enc",
   "mediaFormat": "aes-gcm-bin-v1",
-  "salt": "tPMwIM1F75euqFdQckCtlw",
+  "salt": "h9j7foNVVB3ligxJSCYrNw",
   "iterations": 210000,
-  "generatedAt": "2026-05-15T14:13:48.800Z"
+  "generatedAt": "2026-05-15T14:13:48.309Z"
 }

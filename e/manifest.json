@@ -2,21 +2,75 @@
   "schema": 1,
   "kind": "engineer-index",
   "encryption": "none",
-  "generatedAt": "2026-05-13T16:12:00.991Z",
+  "generatedAt": "2026-05-15T14:13:48.850Z",
   "clients": [
+    {
+      "id": "Dental Proodonto - Vigilância Sanitária",
+      "name": "Dental Proodonto - Vigilância Sanitária",
+      "path": "9K4Ci1ENG-QHuMZp03MEnQxP1_Tp64H4/",
+      "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/9K4Ci1ENG-QHuMZp03MEnQxP1_Tp64H4/",
+      "updatedAt": "2026-05-15T14:13:48.309Z",
+      "summary": {
+        "designGroupCount": 0,
+        "designMediaCount": 0,
+        "obraStageCount": 0,
+        "obraPhotoCount": 0,
+        "ignored": {
+          "designEmptyFolders": 156,
+          "designFiles": 0,
+          "obraItems": 0
+        }
+      }
+    },
+    {
+      "id": "Edmar e Wesler - Amembramento",
+      "name": "Edmar e Wesler - Amembramento",
+      "path": "WdvWSGBBXSgfmfw1hTq_OqMPdTN1wAzr/",
+      "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/WdvWSGBBXSgfmfw1hTq_OqMPdTN1wAzr/",
+      "updatedAt": "2026-05-15T14:13:48.388Z",
+      "summary": {
+        "designGroupCount": 0,
+        "designMediaCount": 0,
+        "obraStageCount": 0,
+        "obraPhotoCount": 0,
+        "ignored": {
+          "designEmptyFolders": 156,
+          "designFiles": 0,
+          "obraItems": 0
+        }
+      }
+    },
     {
       "id": "Lucas",
       "name": "Lucas - Jaqueline",
       "path": "RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/RjSRHtd4eMANzvPJ99s8bsYM-L_hOVZO/",
-      "updatedAt": "2026-05-13T16:12:00.701Z",
+      "updatedAt": "2026-05-15T14:13:48.455Z",
       "summary": {
         "designGroupCount": 18,
         "designMediaCount": 55,
         "obraStageCount": 6,
-        "obraPhotoCount": 183,
+        "obraPhotoCount": 189,
         "ignored": {
           "designEmptyFolders": 33,
+          "designFiles": 0,
+          "obraItems": 0
+        }
+      }
+    },
+    {
+      "id": "Nágila e Lúcio - Condomínio",
+      "name": "Nágila e Lúcio - Condomínio",
+      "path": "zCNnTKLmOOGe9BbbCUzlPObYlpjYpdjg/",
+      "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/zCNnTKLmOOGe9BbbCUzlPObYlpjYpdjg/",
+      "updatedAt": "2026-05-15T14:13:48.652Z",
+      "summary": {
+        "designGroupCount": 0,
+        "designMediaCount": 0,
+        "obraStageCount": 0,
+        "obraPhotoCount": 0,
+        "ignored": {
+          "designEmptyFolders": 156,
           "designFiles": 0,
           "obraItems": 0
         }
@@ -27,7 +81,7 @@
       "name": "Thiago Sarmento",
       "path": "nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/nQw_TlbiWMpVDTdGIxwuUiClfluDB_tf/",
-      "updatedAt": "2026-05-13T16:12:00.879Z",
+      "updatedAt": "2026-05-15T14:13:48.720Z",
       "summary": {
         "designGroupCount": 0,
         "designMediaCount": 0,
@@ -45,7 +99,7 @@
       "name": "Wesler - Lídia",
       "path": "oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
       "url": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/e/oNPSmxXuTcR_uCLiMvduwPNxnUlP8ZEH/",
-      "updatedAt": "2026-05-13T16:12:00.948Z",
+      "updatedAt": "2026-05-15T14:13:48.800Z",
       "summary": {
         "designGroupCount": 0,
         "designMediaCount": 0,
