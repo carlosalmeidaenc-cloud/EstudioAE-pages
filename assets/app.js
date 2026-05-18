@@ -776,8 +776,8 @@
     overlay.dataset.viewerOverlay = "true";
     overlay.tabIndex = -1;
 
-    const title = text(item.title || item.fileName || group.groupTitle);
-    const groupLabel = text(group.groupTitle || moduleTitle());
+    const title = text(group.groupTitle || moduleTitle());
+    const groupLabel = text(moduleTitle());
     overlay.innerHTML = `
       <div class="viewer-topbar">
         <div class="viewer-heading">
@@ -829,7 +829,7 @@
         const image = document.createElement("img");
         image.className = "viewer-image";
         image.src = url;
-        image.alt = title;
+        image.alt = title || "Imagem";
         mountVisual(image);
       }).catch(() => {
         const loading = stage.querySelector(".viewer-loading");

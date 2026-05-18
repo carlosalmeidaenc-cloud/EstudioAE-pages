@@ -376,10 +376,10 @@ a {
   gap: 14px;
   padding: 0;
   color: var(--text);
-  background-color: var(--bg);
+  background-color: #f3f1ec;
   background-image:
-    linear-gradient(to right, var(--line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+    linear-gradient(to right, rgba(214, 207, 196, 0.72) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(214, 207, 196, 0.72) 1px, transparent 1px);
   background-size: 10vw 10vw;
 }
 
@@ -396,7 +396,7 @@ a {
   min-height: 96px;
   padding: 14px max(18px, calc((100vw - 1400px) / 2 + 32px));
   border-bottom: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(250, 249, 245, 0.96);
   backdrop-filter: blur(18px);
 }
 
@@ -494,7 +494,7 @@ a {
   overflow: hidden;
   margin: 0 max(14px, calc((100vw - 1400px) / 2 + 24px));
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(246, 244, 239, 0.92);
   touch-action: none;
   user-select: none;
 }
@@ -533,7 +533,7 @@ a {
   object-fit: contain;
   border-radius: var(--radius);
   box-shadow: 0 18px 44px rgba(1, 2, 2, 0.14);
-  background: #ffffff;
+  background: #f3f1ec;
 }
 
 .viewer-loading,
