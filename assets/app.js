@@ -103,7 +103,7 @@
       <div class="brand">
         <div class="brand-mark">AE</div>
         <div>
-          <p class="brand-title">Estúdio AE</p>
+          <p class="brand-title">Hugo & Costa</p>
           <p class="brand-subtitle">${html(subtitle)}</p>
         </div>
       </div>
@@ -255,7 +255,7 @@
       <div class="brand">
         <div class="brand-mark">AE</div>
         <div>
-          <p class="brand-title">Estúdio AE</p>
+          <p class="brand-title">Hugo & Costa</p>
           <p class="brand-subtitle">${html(subtitle)}</p>
         </div>
       </div>
