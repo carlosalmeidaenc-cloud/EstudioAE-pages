@@ -1,8 +1,8 @@
-const CACHE_NAME = "hc-gitpages-pwa-v5-viewer";
+const CACHE_NAME = "hc-gitpages-pwa-v6-fullscreen-viewer";
 const SHELL_FILES = [
   "./",
-  "./assets/app-c5cf62b.css?v=428e997",
-  "./assets/app.js?v=428e997",
+  "./assets/app-c5cf62b.css?v=20260518-fullscreen-viewer",
+  "./assets/app.js?v=20260518-fullscreen-viewer",
   "./assets/logo.svg",
   "./assets/icons/app-clientes-white-192.png",
   "./assets/icons/app-clientes-white-512.png"
