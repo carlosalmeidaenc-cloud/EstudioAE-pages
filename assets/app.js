@@ -121,6 +121,33 @@
     return `hc-gitpages:${window.location.pathname.replace(/\/index\.html$/i, "/")}:${name}`;
   }
 
+  function routeLaunchStorageKey() {
+    return routeStorageKey("launch-url");
+  }
+
+  function rememberLaunchUrl() {
+    if (!window.location.hash) return;
+    try {
+      window.localStorage.setItem(routeLaunchStorageKey(), window.location.href);
+    } catch (error) {}
+  }
+
+  function restoreLaunchUrl() {
+    if (window.location.hash || !isStandaloneDisplay()) return false;
+    try {
+      const storedUrl = window.localStorage.getItem(routeLaunchStorageKey()) || "";
+      if (!storedUrl) return false;
+      const parsed = new URL(storedUrl, window.location.href);
+      if (parsed.origin !== window.location.origin) return false;
+      if (parsed.pathname.replace(/\/index\.html$/i, "/") !== window.location.pathname.replace(/\/index\.html$/i, "/")) return false;
+      if (!parsed.hash) return false;
+      window.location.replace(parsed.href);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
   function storedHashParam(name) {
     const value = hashParam(name);
     if (value) {
@@ -1118,6 +1145,8 @@
     }
   });
 
+  rememberLaunchUrl();
+  if (restoreLaunchUrl()) return;
   initInstallPrompt();
   registerServiceWorker();
   await boot();

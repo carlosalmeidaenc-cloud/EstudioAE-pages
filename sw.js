@@ -1,8 +1,8 @@
-const CACHE_NAME = "hc-gitpages-pwa-v2";
+const CACHE_NAME = "hc-gitpages-pwa-v3";
 const SHELL_FILES = [
   "./",
   "./assets/app.css?v=20260518-pwa",
-  "./assets/app.js?v=20260518-pwa-start",
+  "./assets/app.js?v=20260518-pwa-launch",
   "./assets/logo.svg",
   "./assets/icons/icon-192.png",
   "./assets/icons/icon-512.png"
@@ -31,11 +31,30 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.endsWith("/manifest.json") || url.pathname.endsWith("/manifest.enc")) return;
+
+  if (url.pathname.endsWith("/manifest.json") || url.pathname.endsWith("/manifest.enc")) {
+    event.respondWith(
+      fetch(request).then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
+        return response;
+      }).catch(() => caches.match(request))
+    );
+    return;
+  }
 
   if (request.mode === "navigate") {
     event.respondWith(
-      fetch(request).catch(() => caches.match(request).then((cached) => cached || caches.match("./")))
+      fetch(request).then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
+        return response;
+      }).catch(() => {
+        const routeIndex = new URL("./index.html", request.url).href;
+        return caches.match(request)
+          .then((cached) => cached || caches.match(routeIndex))
+          .then((cached) => cached || caches.match("./"));
+      })
     );
     return;
   }
@@ -44,7 +63,10 @@ self.addEventListener("fetch", (event) => {
     caches.match(request).then((cached) => {
       if (cached) return cached;
       return fetch(request).then((response) => {
-        const cacheable = response && response.ok && ["style", "script", "image", "font"].includes(request.destination);
+        const cacheable = response && response.ok && (
+          ["style", "script", "image", "font"].includes(request.destination)
+          || url.pathname.includes("/media/")
+        );
         if (cacheable) {
           const copy = response.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)).catch(() => {});
