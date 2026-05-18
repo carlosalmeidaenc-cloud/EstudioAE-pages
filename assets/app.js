@@ -780,9 +780,12 @@
     const groupLabel = text(group.groupTitle || moduleTitle());
     overlay.innerHTML = `
       <div class="viewer-topbar">
-        <div class="viewer-title">
-          <strong>${html(title)}</strong>
-          <span>${html(groupLabel)}</span>
+        <div class="viewer-heading">
+          <div class="viewer-brand" aria-label="Hugo & Costa"></div>
+          <div class="viewer-title">
+            <strong>${html(title)}</strong>
+            <span>${html(groupLabel)}</span>
+          </div>
         </div>
         <div class="viewer-actions">
           <button type="button" class="viewer-button" data-viewer-download>Baixar</button>
