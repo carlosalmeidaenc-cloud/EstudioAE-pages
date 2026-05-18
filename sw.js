@@ -4,8 +4,8 @@ const SHELL_FILES = [
   "./assets/app.css?v=20260518-pwa",
   "./assets/app.js?v=20260518-pwa-launch",
   "./assets/logo.svg",
-  "./assets/icons/icon-192.png",
-  "./assets/icons/icon-512.png"
+  "./assets/icons/app-clientes-192.png",
+  "./assets/icons/app-clientes-512.png"
 ];
 
 self.addEventListener("install", (event) => {

@@ -9,25 +9,25 @@
   "theme_color": "#b61c4e",
   "icons": [
     {
-      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/icon-192.png",
+      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/app-clientes-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/icon-512.png",
+      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/app-clientes-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/maskable-192.png",
+      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/app-clientes-maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/maskable-512.png",
+      "src": "https://carlosalmeidaenc-cloud.github.io/EstudioAE-pages/assets/icons/app-clientes-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
