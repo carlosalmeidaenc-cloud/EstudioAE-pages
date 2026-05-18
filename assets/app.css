@@ -659,6 +659,26 @@ a {
   font-size: 0.86rem;
 }
 
+.install-button {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 80;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 16px 40px rgba(20, 20, 20, 0.16);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 720px) {
   .page-shell {
     width: min(100vw - 24px, 1120px);
@@ -728,5 +748,12 @@ a {
 
   .password-panel form {
     flex-direction: column;
+  }
+
+  .install-button {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: calc(100% - 24px);
   }
 }

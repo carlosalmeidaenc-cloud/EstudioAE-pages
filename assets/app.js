@@ -1,5 +1,9 @@
 (async function () {
   const root = document.getElementById("app");
+  const scriptElement = document.currentScript;
+  const appRootUrl = scriptElement && scriptElement.src
+    ? new URL("../", scriptElement.src)
+    : new URL("./", window.location.href);
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
   let manifest = null;
@@ -15,6 +19,8 @@
     key: null,
     mediaCache: new Map()
   };
+  let deferredInstallPrompt = null;
+  let installButton = null;
 
   function text(value) {
     return String(value == null ? "" : value);
@@ -35,6 +41,54 @@
 
   function clear() {
     root.innerHTML = "";
+  }
+
+  function isStandaloneDisplay() {
+    return window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  }
+
+  function hideInstallButton() {
+    if (installButton) {
+      installButton.remove();
+      installButton = null;
+    }
+  }
+
+  function renderInstallButton() {
+    if (!deferredInstallPrompt || installButton || isStandaloneDisplay()) return;
+    installButton = document.createElement("button");
+    installButton.type = "button";
+    installButton.className = "install-button";
+    installButton.textContent = "Instalar app";
+    installButton.addEventListener("click", async () => {
+      const promptEvent = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      hideInstallButton();
+      if (!promptEvent) return;
+      await promptEvent.prompt();
+    });
+    document.body.appendChild(installButton);
+  }
+
+  function initInstallPrompt() {
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      renderInstallButton();
+    });
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      hideInstallButton();
+    });
+  }
+
+  async function registerServiceWorker() {
+    if (!("serviceWorker" in navigator) || !window.isSecureContext) return;
+    try {
+      await navigator.serviceWorker.register(new URL("sw.js", appRootUrl), { scope: appRootUrl.pathname });
+    } catch (error) {
+      // Instalação PWA é opcional; a página precisa continuar abrindo mesmo se o navegador bloquear.
+    }
   }
 
   function button(className, label, onClick) {
@@ -1045,5 +1099,7 @@
     }
   });
 
+  initInstallPrompt();
+  registerServiceWorker();
   await boot();
 }());
