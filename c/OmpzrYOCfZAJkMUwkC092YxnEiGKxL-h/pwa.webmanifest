@@ -2,7 +2,7 @@
   "name": "Hugo & Costa",
   "short_name": "Hugo & Costa",
   "description": "Area de acompanhamento de projetos Hugo & Costa.",
-  "start_url": ".",
+  "start_url": "./index.html",
   "scope": ".",
   "display": "standalone",
   "background_color": "#ffffff",

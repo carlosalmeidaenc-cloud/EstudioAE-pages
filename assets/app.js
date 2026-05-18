@@ -117,6 +117,25 @@
     return params.get(name) || "";
   }
 
+  function routeStorageKey(name) {
+    return `hc-gitpages:${window.location.pathname.replace(/\/index\.html$/i, "/")}:${name}`;
+  }
+
+  function storedHashParam(name) {
+    const value = hashParam(name);
+    if (value) {
+      try {
+        window.localStorage.setItem(routeStorageKey(name), value);
+      } catch (error) {}
+      return value;
+    }
+    try {
+      return window.localStorage.getItem(routeStorageKey(name)) || "";
+    } catch (error) {
+      return "";
+    }
+  }
+
   async function importAesKey(rawKey) {
     return crypto.subtle.importKey("raw", rawKey, { name: "AES-GCM" }, false, ["decrypt"]);
   }
@@ -1046,7 +1065,7 @@
     }
 
     if (publicManifest.encryption === "aes-gcm") {
-      const rawKey = base64UrlToBytes(hashParam("k"));
+      const rawKey = base64UrlToBytes(storedHashParam("k"));
       if (rawKey.length !== 32) throw new Error("Chave ausente no link.");
       const key = await importAesKey(rawKey);
       manifest = await decryptJson(publicManifest, key);
