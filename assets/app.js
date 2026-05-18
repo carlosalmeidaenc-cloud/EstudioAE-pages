@@ -101,11 +101,7 @@
       : manifest ? manifest.clientName : "Área protegida";
     topbar.innerHTML = `
       <div class="brand">
-        <div class="brand-mark">AE</div>
-        <div>
-          <p class="brand-title">Hugo & Costa</p>
-          <p class="brand-subtitle">${html(subtitle)}</p>
-        </div>
+        <div class="brand-mark" aria-label="Hugo & Costa"></div>
       </div>
     `;
     return topbar;
@@ -253,11 +249,7 @@
     else if (manifest) subtitle = manifest.clientName;
     topbar.innerHTML = `
       <div class="brand">
-        <div class="brand-mark">AE</div>
-        <div>
-          <p class="brand-title">Hugo & Costa</p>
-          <p class="brand-subtitle">${html(subtitle)}</p>
-        </div>
+        <div class="brand-mark" aria-label="Hugo & Costa"></div>
       </div>
     `;
     return topbar;

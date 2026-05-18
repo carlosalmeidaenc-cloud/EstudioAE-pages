@@ -64,7 +64,7 @@ a {
   z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 16px;
   min-height: 100px;
   padding: 0 max(20px, calc((100vw - 1400px) / 2 + 40px));
@@ -76,15 +76,17 @@ a {
 .brand {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   min-width: 0;
+  width: 100%;
 }
 
 .brand-mark {
   display: grid;
   place-items: center;
-  width: 180px;
-  height: 42px;
+  width: 220px;
+  height: 50px;
   overflow: hidden;
   background: url("logo.svg") left center / contain no-repeat;
   color: transparent;
@@ -673,8 +675,8 @@ a {
   }
 
   .brand-mark {
-    width: 140px;
-    height: 34px;
+    width: 174px;
+    height: 40px;
   }
 
   .brand-title {
