@@ -682,22 +682,10 @@
   }
 
   function renderViewerDots(media) {
-    const dots = document.createElement("div");
-    dots.className = "viewer-numbers";
-    media.forEach((item, index) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.className = "viewer-number";
-      dot.textContent = String(index + 1);
-      dot.setAttribute("aria-label", `Item ${index + 1}`);
-      dot.setAttribute("aria-current", String(index === viewer.index));
-      dot.addEventListener("click", () => {
-        viewer.index = index;
-        renderViewer();
-      });
-      dots.appendChild(dot);
-    });
-    return dots;
+    const counter = document.createElement("div");
+    counter.className = "viewer-counter";
+    counter.textContent = `${viewer.index + 1}/${media.length}`;
+    return counter;
   }
 
   function createViewerZoom(stage, content) {
@@ -778,15 +766,10 @@
     overlay.tabIndex = -1;
 
     const title = text(group.groupTitle || moduleTitle());
-    const groupLabel = text(moduleTitle());
     overlay.innerHTML = `
       <div class="viewer-topbar">
         <div class="viewer-heading">
           <div class="viewer-brand" aria-label="Hugo & Costa"></div>
-          <div class="viewer-title">
-            <strong>${html(title)}</strong>
-            <span>${html(groupLabel)}</span>
-          </div>
         </div>
         <div class="viewer-actions">
           <button type="button" class="viewer-button" data-viewer-download>Baixar</button>
@@ -798,7 +781,9 @@
         <div class="viewer-loading">Carregando...</div>
         <button type="button" class="viewer-nav viewer-nav-next" data-viewer-next aria-label="Próximo item">&gt;</button>
       </div>
-      <div class="viewer-footer"></div>
+      <div class="viewer-footer">
+        <div class="viewer-folder-title">${html(title)}</div>
+      </div>
     `;
 
     overlay.querySelector("[data-viewer-close]").addEventListener("click", returnToPreviousPageFromViewer);

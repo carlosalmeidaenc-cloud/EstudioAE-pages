@@ -397,25 +397,30 @@ a {
   top: 0;
   right: 0;
   left: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
   min-height: 0;
-  padding: 16px max(14px, calc((100vw - 1500px) / 2 + 22px));
+  padding: 12px max(14px, calc((100vw - 1500px) / 2 + 22px));
 }
 
 .viewer-heading {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 0;
   min-width: 0;
-  max-width: min(520px, calc(100vw - 150px));
-  opacity: 0.52;
+  max-width: min(320px, calc(100vw - 32px));
+  opacity: 0.72;
 }
 
 .viewer-brand {
   flex: 0 0 auto;
-  width: 92px;
-  height: 24px;
+  width: 118px;
+  height: 30px;
   overflow: hidden;
-  background: url("logo.svg") left center / contain no-repeat;
+  background: url("logo.svg") center center / contain no-repeat;
 }
 
 .viewer-title {
@@ -451,6 +456,7 @@ a {
 .viewer-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   flex: 0 0 auto;
   flex-wrap: wrap;
@@ -486,7 +492,7 @@ a {
 .viewer-button:focus-visible,
 .viewer-nav:hover,
 .viewer-nav:focus-visible,
-.viewer-number:focus-visible {
+.viewer-counter:focus-visible {
   outline: none;
   border-color: var(--accent);
   background: var(--accent-soft);
@@ -599,44 +605,45 @@ a {
   right: max(14px, calc((100vw - 1500px) / 2 + 22px));
   bottom: 14px;
   left: max(14px, calc((100vw - 1500px) / 2 + 22px));
+  flex-direction: column;
   justify-content: center;
   flex-wrap: wrap;
+  gap: 7px;
   padding: 0;
   opacity: 0.78;
 }
 
-.viewer-numbers {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  max-width: 100%;
-  overflow: auto;
-  padding: 5px 6px;
-  background: rgba(250, 249, 245, 0.46);
+.viewer-folder-title {
+  max-width: min(720px, calc(100vw - 36px));
+  overflow: hidden;
+  padding: 5px 10px;
   border: 1px solid rgba(1, 2, 2, 0.1);
+  color: rgba(1, 2, 2, 0.72);
+  background: rgba(250, 249, 245, 0.42);
   backdrop-filter: blur(10px);
+  font-family: var(--font-display);
+  font-size: clamp(0.76rem, 1.8vw, 0.92rem);
+  font-weight: 900;
+  line-height: 1.1;
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
   pointer-events: auto;
 }
 
-.viewer-number {
-  min-width: 28px;
-  height: 26px;
-  padding: 0 8px;
-  border: 1px solid transparent;
-  border-radius: var(--radius);
-  color: rgba(1, 2, 2, 0.62);
-  background: transparent;
-  cursor: pointer;
-  font-size: 0.72rem;
+.viewer-counter {
+  min-width: 64px;
+  padding: 5px 10px;
+  border: 1px solid rgba(1, 2, 2, 0.1);
+  color: rgba(1, 2, 2, 0.72);
+  background: rgba(250, 249, 245, 0.46);
+  backdrop-filter: blur(10px);
+  font-size: 0.78rem;
   font-weight: 900;
-  line-height: 1;
-}
-
-.viewer-number[aria-current="true"] {
-  border-color: rgba(1, 2, 2, 0.18);
-  color: var(--accent-strong);
-  background: rgba(255, 255, 255, 0.68);
+  line-height: 1.1;
+  text-align: center;
+  pointer-events: auto;
 }
 
 .empty-state,
@@ -786,22 +793,22 @@ a {
   }
 
   .viewer-topbar {
-    align-items: flex-start;
-    flex-direction: row;
+    align-items: center;
+    flex-direction: column;
     min-height: auto;
-    padding: 10px;
+    padding: 9px;
   }
 
   .viewer-heading {
     align-items: center;
     flex-direction: row;
-    gap: 8px;
-    max-width: calc(100vw - 118px);
+    gap: 0;
+    max-width: calc(100vw - 24px);
   }
 
   .viewer-brand {
-    width: 82px;
-    height: 22px;
+    width: 96px;
+    height: 24px;
   }
 
   .viewer-title {
