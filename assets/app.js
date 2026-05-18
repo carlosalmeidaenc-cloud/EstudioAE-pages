@@ -683,11 +683,12 @@
 
   function renderViewerDots(media) {
     const dots = document.createElement("div");
-    dots.className = "viewer-dots";
+    dots.className = "viewer-numbers";
     media.forEach((item, index) => {
       const dot = document.createElement("button");
       dot.type = "button";
-      dot.className = "viewer-dot";
+      dot.className = "viewer-number";
+      dot.textContent = String(index + 1);
       dot.setAttribute("aria-label", `Item ${index + 1}`);
       dot.setAttribute("aria-current", String(index === viewer.index));
       dot.addEventListener("click", () => {
@@ -797,9 +798,7 @@
         <div class="viewer-loading">Carregando...</div>
         <button type="button" class="viewer-nav viewer-nav-next" data-viewer-next aria-label="Próximo item">&gt;</button>
       </div>
-      <div class="viewer-footer">
-        <span>${html(`${viewer.index + 1} / ${media.length}`)}</span>
-      </div>
+      <div class="viewer-footer"></div>
     `;
 
     overlay.querySelector("[data-viewer-close]").addEventListener("click", returnToPreviousPageFromViewer);
